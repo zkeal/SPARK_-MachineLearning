@@ -184,6 +184,7 @@ public class Svm_Tool implements ToolInterface {
         {
             throw new HiveException("error at size of training data");
         }
+
         double[][] matrix = new double[data_set.size()][Dimension];
         Iterator iter = data_set.entrySet().iterator();
         int lines_num = 0;
@@ -201,9 +202,14 @@ public class Svm_Tool implements ToolInterface {
     }
 
     @Override
-    public String build_result(Matrix aerph,Matrix label,Matrix traindata)
-    {
-        return null;
+    public int get_Arraysize(HashMap<String, ArrayList> data_set){
+        Iterator it = data_set.entrySet().iterator();
+        if(it.hasNext())
+        {
+            Map.Entry entry = (Map.Entry)it.next();
+            return  ((ArrayList)entry.getValue()).size();
+        }
+        return 0;
     }
 
     public static double get_inner_product(Matrix A,Matrix B)
@@ -229,22 +235,6 @@ public class Svm_Tool implements ToolInterface {
             result = (int)(index.nextDouble()*bond);
         }
         return result;
-    }
-
-    public static int get_heuristic(Matrix aerph,Matrix label,Matrix traindata, int Dimension,double B,int maxsize,double now_Ei)
-    {
-        double temp_Ei=-999.9;
-        int record_count = 0;
-        for(int i=0;i<maxsize;i++)
-        {
-            double temp_value = getEi(aerph,label,traindata,i,Dimension,B);
-            if(Math.abs(now_Ei-temp_value)> temp_Ei)
-            {
-                temp_Ei=Math.abs(now_Ei-temp_value);
-                record_count=i;
-            }
-        }
-        return record_count;
     }
 
 

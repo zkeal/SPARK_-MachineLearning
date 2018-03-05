@@ -19,7 +19,7 @@ public class SVM_TRAIN extends AbstractGenericUDAFResolver {
     {
         if(parameters.length!=6)
         {
-            throw new UDFArgumentTypeException(parameters.length-1,"Exactly one argument is expected");
+            throw new UDFArgumentTypeException(parameters.length-1,"Exactly Six argument is expected");
         }
         return new SvmLine();
     }
@@ -58,7 +58,7 @@ public class SVM_TRAIN extends AbstractGenericUDAFResolver {
             }
         }
 
-        static class EventEntity implements AggregationBuffer
+        public static class EventEntity implements AggregationBuffer
         {
             String SampleId;
             HashMap<String,ArrayList> FeatureMap;
@@ -136,25 +136,23 @@ public class SVM_TRAIN extends AbstractGenericUDAFResolver {
         @Override
         public void iterate(AggregationBuffer aggregationBuffer, Object[] objects) throws HiveException {
             try {
-                if(objects==null || objects.length!=5)
+                if(objects==null || objects.length!=6)
                 {
                     return;
                 }
-                if(SampleId!=null){
-                    ArrayList<Double> value = new ArrayList<Double>();
-                    String SampleId = objects[0]==null?"":objects[0].toString();
-                    Double flag = Double.parseDouble(objects[1]==null?"":objects[1].toString());
-                    Double tolerance = Double.parseDouble(objects[2]==null?"":objects[2].toString());
-                    int MaxCounter = Integer.parseInt(objects[3]==null?"":objects[3].toString());
-                    String kernel = Tool.getKernel(objects[4]==null?"":objects[4].toString());
-                    EventEntity event = (EventEntity)aggregationBuffer;
-                    event.setFlag(flag);
-                    event.setTolrance(tolerance);
-                    event.setMaxCouter(MaxCounter);
-                    event.setKernel(kernel);
-                    event.setSampleId(SampleId);
-                    event.FeatureMap.put(SampleId,Tool.getparameters(flag,objects[1]));
-                }
+                ArrayList<Double> value = new ArrayList<Double>();
+                String SampleId = objects[0]==null?"":objects[0].toString();
+                Double flag = Double.parseDouble(objects[2]==null?"":objects[2].toString());
+                Double tolerance = Double.parseDouble(objects[3]==null?"":objects[3].toString());
+                int MaxCounter = Integer.parseInt(objects[4]==null?"":objects[4].toString());
+                String kernel = Tool.getKernel(objects[5]==null?"":objects[5].toString());
+                EventEntity event = (EventEntity)aggregationBuffer;
+                event.setFlag(flag);
+                event.setTolrance(tolerance);
+                event.setMaxCouter(MaxCounter);
+                event.setKernel(kernel);
+                event.setSampleId(SampleId);
+                event.FeatureMap.put(SampleId,Tool.getparameters(flag,objects[1]));
             }catch (Exception e)
             {
                 if(SampleId==null)
@@ -188,7 +186,7 @@ public class SVM_TRAIN extends AbstractGenericUDAFResolver {
         public void merge(AggregationBuffer aggregationBuffer, Object o) throws HiveException {
             try {
                 EventEntity eventEntity = (EventEntity) aggregationBuffer;
-                Map<String,ArrayList> sammple = (Map<String,ArrayList>)internalMergeIO.getMap(o);
+                Map<String,ArrayList> sammple = (Map<String,ArrayList>)o;
                 Iterator iter = sammple.entrySet().iterator();
                 while (iter.hasNext())
                 {
@@ -219,12 +217,12 @@ public class SVM_TRAIN extends AbstractGenericUDAFResolver {
         @Override
         public Object terminate(AggregationBuffer aggregationBuffer) throws HiveException {
             EventEntity data_set = (EventEntity)aggregationBuffer;
-            int demension = Tool.getDemension(data_set.getFeatureMap());
+            int demension = Tool.get_Arraysize(data_set.getFeatureMap())-1;
             if(demension>0)
             {
                 Matrix train_data = Tool.getTrain_data(demension,data_set.getFeatureMap());
                 Matrix label = Tool.getLabel(data_set.getFeatureMap());
-                Equations result = Tool.SMO(Tool.getinit_matrix(demension),label,train_data,data_set.tolrance,data_set.MaxCouter);
+                Equations result = Tool.SMO(Tool.getinit_matrix(data_set.getFeatureMap().size()),label,train_data,data_set.tolrance,data_set.MaxCouter);
                 return result.toString();
             }
             return null;

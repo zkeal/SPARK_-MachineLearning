@@ -67,9 +67,16 @@ public class Equations {
                 Slabel.append(",");
             }
         }
-        result_aerph = Saerph.toString().substring(0, Saerph.length() -1);
-        result_label = Slabel.toString().substring(0, Slabel.length() -1);
-        result_traindata = Strain_data.toString().replaceAll(",;",";");
+        if(Saerph.toString().isEmpty())
+        {
+            result_aerph="";
+            result_label="";
+            result_traindata="";
+        }else {
+            result_aerph = Saerph.toString().substring(0, Saerph.length() -1);
+            result_label = Slabel.toString().substring(0, Slabel.length() -1);
+            result_traindata = Strain_data.toString().replaceAll(",;",";");
+        }
     }
     //to get a formal string to predict elsewhere
     @Override

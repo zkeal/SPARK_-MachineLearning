@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 
 public class Svm_ToolTest {
     static ToolInterface unit_test = new Svm_Tool();
-    static HashMap<String,ArrayList> train_data =  get_test_train_data(100,5);
+    static HashMap<String,ArrayList> train_data =  get_test_train_data(200,5);
 
     @Test
     public void getparameters() throws Exception {
@@ -42,10 +42,10 @@ public class Svm_ToolTest {
 
     @Test
     public void SMO() throws Exception {
-        Matrix trai_data = unit_test.getTrain_data(unit_test.getDemension(train_data),train_data);
+        Matrix trai_data = unit_test.getTrain_data(unit_test.get_Arraysize(train_data)-1,train_data);
         Matrix label = unit_test.getLabel(train_data);
         Matrix aerph = unit_test.getinit_matrix(unit_test.getDemension(train_data));
-        Equations result = unit_test.SMO(aerph,label,trai_data,0.1,1000);
+        Equations result = unit_test.SMO(aerph,label,trai_data,0.2,1000);
         System.out.print(result.toString());
     }
 

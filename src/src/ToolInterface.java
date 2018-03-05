@@ -29,5 +29,5 @@ public interface ToolInterface {
     Equations SMO(Matrix aerph, Matrix label, Matrix traindata, double tolerance, int maxcounter) throws HiveException;
 
     //build result
-    String build_result(Matrix aerph, Matrix label, Matrix traindata);
+    int get_Arraysize(HashMap<String, ArrayList> data_set);
 }
