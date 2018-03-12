@@ -45,12 +45,12 @@ you can get a double value in the End.
 example_svm(id,vector,flag,0.1,300,"Linear") 
 id:The primary key for each row of data.
 vector: used for describe the features. vector are required as a string like ->"feature_A:2,feature_B:3:feature_C:4",and resouce table look like below.
-----------------------------------------------------------
+................................................................
 id |                   vector                |   flag    
 1  | feature_A:2,feature_B:3:feature_C:4     |    1
 2  | feature_A:3,feature_B:2:feature_C:1     |    1
 3  | feature_A:0,feature_B:-1:feature_C:-1   |   -1
-----------------------------------------------------------
+................................................................
 0.1: it means tolerence .
 300: it means max counter.
 "Linear": it means kernel .Now it's only support Linear kernel,but I will update it.
