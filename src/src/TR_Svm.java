@@ -13,7 +13,7 @@ import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 import java.util.*;
 
-public class SVM_TRAIN extends AbstractGenericUDAFResolver {
+public class TR_Svm extends AbstractGenericUDAFResolver {
     @Override
     public GenericUDAFEvaluator getEvaluator(TypeInfo[] parameters) throws SemanticException
     {
@@ -186,7 +186,8 @@ public class SVM_TRAIN extends AbstractGenericUDAFResolver {
         public void merge(AggregationBuffer aggregationBuffer, Object o) throws HiveException {
             try {
                 EventEntity eventEntity = (EventEntity) aggregationBuffer;
-                Map<String,ArrayList> sammple = (Map<String,ArrayList>)o;
+                Map<String,ArrayList> sammple = (Map<String,ArrayList>)internalMergeIO.getMap(o);
+                //Map<String,ArrayList> sammple = (Map<String,ArrayList>)o;
                 Iterator iter = sammple.entrySet().iterator();
                 while (iter.hasNext())
                 {
@@ -210,7 +211,7 @@ public class SVM_TRAIN extends AbstractGenericUDAFResolver {
                 }
             }catch (Exception e)
             {
-                throw new HiveFatalException("terminatePartial"+e.getMessage());
+                throw new HiveFatalException("merge"+e.getMessage());
             }
         }
 

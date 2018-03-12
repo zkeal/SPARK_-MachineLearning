@@ -27,7 +27,12 @@ public class Svm_Tool implements ToolInterface {
                 {
                     continue;
                 }
-                result.add(Double.parseDouble(key_value[1]));
+                double value= Double.parseDouble(key_value[1]);
+                if(0.0==value)
+                {
+                    value=value+0.001;//laplace calibration
+                }
+                result.add(value);
             }
         }
         return result;

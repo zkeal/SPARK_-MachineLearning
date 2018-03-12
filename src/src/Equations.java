@@ -2,6 +2,7 @@ package src;
 
 import Jama.Matrix;
 import net.sf.json.JSONObject;
+import org.apache.hadoop.hive.ql.metadata.HiveException;
 
 
 public class Equations {
@@ -42,7 +43,7 @@ public class Equations {
         result_traindata = result_traindata;
     }
 
-    public Equations(Matrix aerph,Matrix label,Matrix train_data,double B){
+    public Equations(Matrix aerph,Matrix label,Matrix train_data,double B) throws HiveException {
         StringBuilder Saerph = new StringBuilder();
         StringBuilder Slabel = new StringBuilder();
         StringBuilder Strain_data = new StringBuilder();
@@ -55,28 +56,31 @@ public class Equations {
                 Slabel.append(label.get(i,0));
                 for(int j=0;j < train_data.getColumnDimension();j++)
                 {
-                    if(0.0==train_data.get(i,j))
-                    {
-                        continue;
-                    }
                     Strain_data.append(train_data.get(i,j));
                     Strain_data.append(",");
                 }
-                Strain_data.append(";");
+                Strain_data.append("#");
                 Saerph.append(",");
                 Slabel.append(",");
             }
         }
-        if(Saerph.toString().isEmpty())
+        try {
+            if(Saerph.toString().isEmpty() || Saerph.equals(""))
+            {
+                result_aerph="";
+                result_label="";
+                result_traindata="";
+            }else {
+                result_aerph = Saerph.toString().substring(0, Saerph.length() -1);
+                result_label = Slabel.toString().substring(0, Slabel.length() -1);
+                result_traindata = Strain_data.toString().replaceAll(",#","#");
+            }
+        }catch (Exception e)
         {
-            result_aerph="";
-            result_label="";
-            result_traindata="";
-        }else {
-            result_aerph = Saerph.toString().substring(0, Saerph.length() -1);
-            result_label = Slabel.toString().substring(0, Slabel.length() -1);
-            result_traindata = Strain_data.toString().replaceAll(",;",";");
+            throw new HiveException("Saerph:"+Saerph.toString()+",Slalbel:"+Slabel.toString());
         }
+
+
     }
     //to get a formal string to predict elsewhere
     @Override

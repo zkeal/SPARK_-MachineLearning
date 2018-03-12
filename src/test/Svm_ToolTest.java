@@ -107,10 +107,11 @@ public class Svm_ToolTest {
                 value = value+5;
             }else {
                 temp.add(-1.0);
+                value=0;
             }
             for(int j=1;j<col+1;j++)
             {
-                temp.add(value-2);
+                temp.add(value);
             }
             test.put(i+"",temp);
         }
