@@ -7,7 +7,7 @@ This is a UDAF Based on HiveUDF.This function is a distributed implementation of
 
 ###SVM:<br>  
 https://en.wikipedia.org/wiki/Support_vector_machine  <br>  
-![image](https://github.com/zkeal/SPARK_SVM/blob/master/src/ScreenShot/introduce.jpg)
+![image](https://github.com/zkeal/SPARK_SVM/blob/master/src/ScreenShot/introduce.jpg)<br>  
 Support Vector Machine in the field of machine learning is a supervised learning model, which is usually used for pattern recognition, classification and regression analysis.It implements classification by building a hyperplane.And SMO is choosed to get the Lagrange parameters(https://en.wikipedia.org/wiki/Sequential_minimal_optimization) in this UDAF.<br>  
 
 Any BUG or advice,contact me freely : zkeal@outlook.com <br>  
@@ -48,9 +48,9 @@ vector: used for describe the features. vector are required as a string like ->"
 
 ................................................................<br>  
 id |                   vector                |   flag           <br>  
-1  | feature_A:2,feature_B:3:feature_C:4     |    1             <br>  
-2  | feature_A:3,feature_B:2:feature_C:1     |    1             <br>  
-3  | feature_A:0,feature_B:-1:feature_C:-1   |   -1             <br>  
+1  | feature_A:2,feature_B:3,feature_C:4     |    1             <br>  
+2  | feature_A:3,feature_B:2,feature_C:1     |    1             <br>  
+3  | feature_A:0,feature_B:-1,feature_C:-1   |   -1             <br>  
 ................................................................<br>  
 
 0.1: it means tolerence .<br>  
