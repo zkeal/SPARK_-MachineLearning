@@ -1,4 +1,4 @@
-package src;
+package src.SVM;
 
 import net.sf.json.JSONObject;
 import org.apache.hadoop.hive.ql.exec.UDF;

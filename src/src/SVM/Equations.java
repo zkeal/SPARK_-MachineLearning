@@ -1,4 +1,4 @@
-package src;
+package src.SVM;
 
 import Jama.Matrix;
 import net.sf.json.JSONObject;

@@ -1,4 +1,4 @@
-package src;
+package src.SVM;
 
 import Jama.Matrix;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
@@ -79,7 +79,7 @@ public class Svm_Tool implements ToolInterface {
     }
 
     @Override
-    public Equations SMO(Matrix aerph,Matrix label,Matrix traindata,double tolerance,int maxcounter) throws HiveException
+    public Equations SMO(Matrix aerph, Matrix label, Matrix traindata, double tolerance, int maxcounter) throws HiveException
     {
         double C=tolerance;
         double B=0;

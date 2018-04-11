@@ -1,7 +1,8 @@
-package src;
+package src.SVM;
 
 import Jama.Matrix;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
+import src.SVM.Equations;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package src;
+package src.SVM;
 
 import Jama.Matrix;
 import com.google.common.collect.Maps;
@@ -10,6 +10,9 @@ import org.apache.hadoop.hive.ql.udf.generic.AbstractGenericUDAFResolver;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDAFEvaluator;
 import org.apache.hadoop.hive.serde2.objectinspector.*;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
+import src.SVM.Equations;
+import src.SVM.Svm_Tool;
+import src.SVM.ToolInterface;
 
 import java.util.*;
 
