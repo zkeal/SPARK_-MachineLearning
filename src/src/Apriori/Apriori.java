@@ -134,10 +134,6 @@ public class Apriori extends AbstractGenericUDAFResolver{
         @Override
         public void iterate(AggregationBuffer aggregationBuffer, Object[] objects) throws HiveException {
             try {
-                if(objects==null || objects.length!=2)
-                {
-                    return;
-                }
                 ArrayList<String> value = new ArrayList<String>();
                 String user_name = objects[0]==null?"":objects[0].toString();
                 String values = objects[1]==null?"":objects[1].toString();
@@ -180,14 +176,9 @@ public class Apriori extends AbstractGenericUDAFResolver{
             try {
                 EventEntity eventEntity = (EventEntity) aggregationBuffer;
                 Map<String,ArrayList<String>> sammple = (Map<String,ArrayList<String>>)internalMergeIO.getMap(o);
-                //Map<String,ArrayList> sammple = (Map<String,ArrayList>)o;
-                Iterator iter = sammple.entrySet().iterator();
-                while (iter.hasNext())
+                for(Map.Entry<String,ArrayList<String>> entry:sammple.entrySet())
                 {
-                    Map.Entry entry = (Map.Entry) iter.next();
-                    Object key = entry.getKey();
-                    ArrayList<String> value = (ArrayList<String>) entry.getValue();
-                    eventEntity.record.put(key.toString(),value);
+                    eventEntity.record.put(entry.getKey(),entry.getValue());
                 }
             }catch (Exception e)
             {
@@ -200,6 +191,11 @@ public class Apriori extends AbstractGenericUDAFResolver{
             EventEntity data_set = (EventEntity)aggregationBuffer;
             String result = algorithm_excutor.get_Maxfrequent(data_set.record,data_set.min,data_set.record.size());
             return result;
+        }
+
+        public static void main(String[] args)
+        {
+
         }
     }
 
