@@ -1,18 +1,30 @@
-# SPARK_SVM
+<details>
+  <summary>SPARK_SVM</summary>
+  <p> The class of TR_Svm is a training function to get a string which corresponds to the Lagrange multiplier and other parameters.<br>
+  As the result of substring by ',' and ':', the input must be in strict accordance with the format.
+  </p>
+  <p>
+  Use the class of PredictSvm to get prediction from the training result which could be get from TR_Svm.
+  </p>
+  <p>
+  Note: Compile the code into a jar to use or use the uploaded jar directly.(upload later)
+  </p>
+  <p> 
+
 a SVM Based on  Hive(UDAF)
 
-##Introduce
+___Introduce___
 
 This is a UDAF Based on HiveUDF.This function is a distributed implementation of SVM(Support Vector Machine).If you want to get a series of Machine Learing methods in Spark.I'm sure you should use MLlib.(http://spark.apache.org/mllib/).<br>
 
-###SVM:<br>  
+__SVM:__<br> 
 https://en.wikipedia.org/wiki/Support_vector_machine  <br>  
 ![image](https://github.com/zkeal/SPARK_SVM/blob/master/src/ScreenShot/introduce.jpg)<br>  
 Support Vector Machine in the field of machine learning is a supervised learning model, which is usually used for pattern recognition, classification and regression analysis.It implements classification by building a hyperplane.And SMO is choosed to get the Lagrange parameters(https://en.wikipedia.org/wiki/Sequential_minimal_optimization) in this UDAF.<br>  
 
 Any BUG or advice,contact me freely : zkeal@outlook.com <br>  
 
-##How to use 
+___How to use___ 
 
 1.you can use the sourcecode to compile and build a jar,or use the jar directly.<br>  
 
@@ -41,7 +53,7 @@ select predict_svm(pre.data,t.result) from your_predict_source pre join(select r
 ```
 you can get a double value in the End.<br>  
 
-#NB:some explain about the parameter.<br>  
+__NB:some explain about the parameter.__<br>  
 example_svm(id,vector,flag,0.1,300,"Linear") <br>  
 id:The primary key for each row of data.<br>  
 vector: used for describe the features. vector are required as a string like ->"feature_A:2,feature_B:3:feature_C:4",and resouce table look like below.<br>  
@@ -56,6 +68,8 @@ id |                   vector                |   flag           <br>
 0.1: it means tolerence .<br>  
 300: it means max counter.<br>  
 "Linear": it means kernel .Now it's only support Linear kernel,but I will update it.<br>  
+</p>
+</details>
 
 
 
