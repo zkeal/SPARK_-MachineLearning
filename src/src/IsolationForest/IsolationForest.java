@@ -1,5 +1,8 @@
 package src.IsolationForest;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.gson.Gson;
 import org.apache.hadoop.hive.ql.exec.UDFArgumentTypeException;
 import org.apache.hadoop.hive.ql.metadata.HiveException;
 import org.apache.hadoop.hive.ql.udf.generic.AbstractGenericUDAFResolver;
@@ -8,6 +11,8 @@ import org.apache.hadoop.hive.serde2.objectinspector.*;
 import org.apache.hadoop.hive.serde2.typeinfo.TypeInfo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class IsolationForest extends AbstractGenericUDAFResolver{
     @Override
@@ -24,6 +29,8 @@ public class IsolationForest extends AbstractGenericUDAFResolver{
         protected PrimitiveObjectInspector intput_num;
         protected StandardListObjectInspector internalMergeIO;
         protected ObjectInspector output;
+
+        public static algorithm algorithm = new algorithm();
 
         @Override
         public ObjectInspector init(Mode m, ObjectInspector[] parameters) throws HiveException
@@ -53,30 +60,32 @@ public class IsolationForest extends AbstractGenericUDAFResolver{
         }
 
         public static class DataEntity implements AggregationBuffer{
-            ArrayList<Integer> data_set;
+            ArrayList<Double> data_set;
             int max_count_per_tree;
-            int hight_limit;
-            int parameter_length;
+            double fileter;
+            ArrayList<Double> result;
 
-            DataEntity(){
-                data_set = new ArrayList<Integer>();
+            public DataEntity()
+            {
+                data_set = new ArrayList <Double>();
+                result = new ArrayList <Double>();
                 max_count_per_tree=0;
-                hight_limit = 0;
+                fileter = 0.2;
             }
 
-            public int getParameter_length() {
-                return parameter_length;
+            public ArrayList <Double> getResult() {
+                return result;
             }
 
-            public void setParameter_length(int parameter_length) {
-                this.parameter_length = parameter_length;
+            public void setResult(ArrayList <Double> result) {
+                this.result = result;
             }
 
-            public ArrayList<Integer> getData_set() {
+            public ArrayList <Double> getData_set() {
                 return data_set;
             }
 
-            public void setData_set(ArrayList<Integer> data_set) {
+            public void setData_set(ArrayList <Double> data_set) {
                 this.data_set = data_set;
             }
 
@@ -88,14 +97,15 @@ public class IsolationForest extends AbstractGenericUDAFResolver{
                 this.max_count_per_tree = max_count_per_tree;
             }
 
-            public int getHight_limit() {
-                return hight_limit;
+            public double getFileter() {
+                return fileter;
             }
 
-            public void setHight_limit(int hight_limit) {
-                this.hight_limit = hight_limit;
+            public void setFileter(double fileter) {
+                this.fileter = fileter;
             }
         }
+
 
         @Override
         public AggregationBuffer getNewAggregationBuffer() throws HiveException {
@@ -106,7 +116,7 @@ public class IsolationForest extends AbstractGenericUDAFResolver{
         @Override
         public void reset(AggregationBuffer aggregationBuffer) throws HiveException {
             ((DataEntity)aggregationBuffer).data_set.clear();
-            ((DataEntity)aggregationBuffer).setHight_limit(0);
+            ((DataEntity)aggregationBuffer).result.clear();
             ((DataEntity)aggregationBuffer).setMax_count_per_tree(0);
         }
 
@@ -115,13 +125,10 @@ public class IsolationForest extends AbstractGenericUDAFResolver{
             try{
                 int parameter_size = objects.length-2;
                 DataEntity dataEntity = (DataEntity)aggregationBuffer;
-                dataEntity.setParameter_length(parameter_size);
-                dataEntity.setMax_count_per_tree(objects[0]==null?0:Integer.getInteger(objects[0].toString()));
-                dataEntity.setHight_limit(objects[1]==null?0:Integer.getInteger(objects[1].toString()));
-                for(int i=2;i<objects.length;i++)
-                {
-                    dataEntity.data_set.add(objects[i]==null?0:Integer.getInteger(objects[i].toString()));
-                }
+                dataEntity.setMax_count_per_tree(parameter_size);
+                dataEntity.setFileter(objects[0]==null?0.2:Double.valueOf(objects[0].toString()));
+                dataEntity.setMax_count_per_tree(objects[1]==null?0:Integer.getInteger(objects[1].toString()));
+                dataEntity.data_set.add(objects[2]==null?0:Double.valueOf(objects[2].toString()));
             }catch (Exception e)
             {
                 e.printStackTrace();
@@ -131,24 +138,32 @@ public class IsolationForest extends AbstractGenericUDAFResolver{
         @Override
         public Object terminatePartial(AggregationBuffer aggregationBuffer) throws HiveException {
             DataEntity dataEntity = (DataEntity)aggregationBuffer;
-            if(dataEntity.data_set.size() >dataEntity.getMax_count_per_tree())
-            {
-                return null;
-            }
-            else
-            {
-                return null;
-            }
+            ArrayList<Double> data_set = Lists.newArrayList(dataEntity.data_set);
+            return data_set;
         }
 
         @Override
         public void merge(AggregationBuffer aggregationBuffer, Object o) throws HiveException {
-
+            //build ITree in this stage and get isolated parameters to final stage
+            DataEntity dataEntity = (DataEntity)aggregationBuffer;
+            ArrayList<Double> Entity_list = dataEntity.getData_set();
+            if(dataEntity.getData_set().size()>dataEntity.max_count_per_tree)
+            {
+                dataEntity.setResult(algorithm.calculate_IFtree(dataEntity.getData_set(),dataEntity.getFileter()));
+            }
+            else
+            {
+                ArrayList<Double> parameter_List = (ArrayList<Double>)internalMergeIO.getList(o);
+                parameter_List.addAll(Entity_list);
+                dataEntity.setData_set(parameter_List);
+            }
         }
 
         @Override
         public Object terminate(AggregationBuffer aggregationBuffer) throws HiveException {
-            return null;
+            DataEntity dataEntity = (DataEntity)aggregationBuffer;
+            Gson gson = new Gson();
+            return  gson.toJson(dataEntity);
         }
     }
 }
